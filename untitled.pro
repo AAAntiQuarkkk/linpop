@@ -19,6 +19,9 @@ SOURCES += \
     UserInfo.cpp \
     addfriendship.cpp \
     database.cpp \
+    guichatlist.cpp \
+    guichatwindow.cpp \
+    guiuserlist.cpp \
     login.cpp \
     main.cpp \
     mainwindow.cpp
@@ -26,11 +29,17 @@ SOURCES += \
 HEADERS += \
     addfriendship.h \
     database.h \
+    guichatlist.h \
+    guichatwindow.h \
+    guiuserlist.h \
     login.h \
     mainwindow.h
 
 FORMS += \
     addfriendship.ui \
+    guichatlist.ui \
+    guichatwindow.ui \
+    guiuserlist.ui \
     login.ui \
     mainwindow.ui
 

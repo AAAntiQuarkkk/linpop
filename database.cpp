@@ -92,7 +92,7 @@ bool DataDB::registerUser(const quint32 user_id, const QString& password) {
     }
     return true;
 }
-
+/*
 bool DataDB::loginUser(const quint32 user_id, const QString& password) {
     QSqlQuery query(db->sqldb);
     query.prepare("SELECT * FROM users WHERE user_id = :user_id AND password = :password ");
@@ -114,7 +114,7 @@ bool DataDB::loginUser(const quint32 user_id, const QString& password) {
         return false;
     }
 }
-
+*/
 void DataDB::addFriendship(quint32 friend_id){
     QSqlQuery query(db->sqldb);
     query.prepare("INSERT INTO friends (user_id, friend_id) VALUES (:user_id, :friend_id)");
