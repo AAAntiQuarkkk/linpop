@@ -18,7 +18,9 @@ public:
 private slots:
     //void checkUserSelected();//需要有对用户作区分的参数？
     void showChat();//对会话需要一个区分的参数？
+    void friendItemClicked();
 
+    void on_pushButton_clicked();
 
 private:
     Ui::MainWindow *ui;

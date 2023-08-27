@@ -11,7 +11,6 @@ GuiUserList::GuiUserList(QWidget *parent) :
     ui->treeWidget->setRootIsDecorated(false);
     ui->treeWidget->setMouseTracking(true);
 
-    connect(ui->pushButton,SIGNAL(clicked(bool)),this,SLOT(addGuiUser()));
     connect(ui->treeWidget,SIGNAL(itemClicked(QTreeWidgetItem*,int)),this,SLOT(userItemSelected(QTreeWidgetItem*,int)));
 }
 

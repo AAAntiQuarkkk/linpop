@@ -1,5 +1,5 @@
-#include "registerui.h"
-#include "ui_registerui.h"
+#include "register.h"
+#include "ui_register.h"
 #include <userinfo.h>
 #include <login.h>
 
@@ -12,6 +12,7 @@ registerui::registerui(QWidget *parent) :
     ui(new Ui::registerui)
 {
     ui->setupUi(this);
+    setWindowTitle("linpop");
     tcpSocket = new QTcpSocket();
 }
 

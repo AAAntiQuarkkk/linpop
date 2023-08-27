@@ -1,5 +1,5 @@
-#ifndef GUICHATWINDOW_H
-#define GUICHATWINDOW_H
+#ifndef CHATWINDOW_H
+#define CHATWINDOW_H
 
 #include <QMainWindow>
 
@@ -19,4 +19,4 @@ private:
     Ui::GuiChatWindow *ui;
 };
 
-#endif // GUICHATWINDOW_H
+#endif // CHATWINDOW_H

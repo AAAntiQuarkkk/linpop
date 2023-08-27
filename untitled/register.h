@@ -1,5 +1,5 @@
-#ifndef REGISTERUI_H
-#define REGISTERUI_H
+#ifndef REGISTER_H
+#define REGISTER_H
 
 #include <QWidget>
 #include <QTcpServer>
@@ -29,4 +29,4 @@ private:
     QTcpSocket *tcpSocket;
 };
 
-#endif // REGISTERUI_H
+#endif // REGISTER_H

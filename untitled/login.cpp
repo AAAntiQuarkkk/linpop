@@ -3,7 +3,7 @@
 #include <QtNetwork>
 #include <QMessageBox>
 #include "mainwindow.h"
-#include "registerui.h"
+#include "register.h"
 #include <userinfo.h>
 
 extern userinfo user;
@@ -15,9 +15,8 @@ Login::Login(QWidget *parent) :
     ui(new Ui::Login)
 {
     ui->setupUi(this);
+    setWindowTitle("linpop");
     tcpSocket = new QTcpSocket();
-    //connect(ui->pushButton,SIGNAL(clicked(bool)),this,SLOT(btnClicked()));
-    //connect(this,SIGNAL(btnSignal(quint8)),this,SLOT(getStatus(quint8)));
 }
 
 Login::~Login()
@@ -25,21 +24,6 @@ Login::~Login()
     delete tcpSocket;
     delete ui;
 }
-
-// //开发过程中从测试用
-//void Login::btnClicked(){
-//    quint8 state = 1;
-//    emit btnSignal(state);
-//}
-
-// //根据服务器返回的状态判断登陆
-//void Login::getStatus(quint8 state){
-//    if(state) {
-//        MainWindow *mainwindow = new MainWindow();
-//        mainwindow->show();
-//        this->close();
-//    }
-//}
 
 void Login::on_pushButton_clicked()
 {
@@ -98,8 +82,6 @@ void Login::on_pushButton_clicked()
         ui->lineEdit->setFocus();
     }
 }
-
-
 
 void Login::on_pushButton_2_clicked()
 {

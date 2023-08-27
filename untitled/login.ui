@@ -111,7 +111,7 @@
      </font>
     </property>
     <property name="text">
-     <string>登录界面</string>
+     <string>账号登录</string>
     </property>
    </widget>
   </widget>
