@@ -12,6 +12,7 @@ registerui::registerui(QWidget *parent) :
     ui(new Ui::registerui)
 {
     ui->setupUi(this);
+    setWindowTitle("账号注册");
     tcpSocket = new QTcpSocket();
     QPixmap *pix = new QPixmap(":/register.png");
     QSize sz = ui->label_5->size();

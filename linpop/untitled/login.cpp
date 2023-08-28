@@ -15,6 +15,7 @@ Login::Login(QWidget *parent) :
     ui(new Ui::Login)
 {
     ui->setupUi(this);
+    setWindowTitle("账号登录");
     tcpSocket = new QTcpSocket();
     QPixmap *pix = new QPixmap(":/login.png");
     QSize sz = ui->label_4->size();

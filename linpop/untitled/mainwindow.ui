@@ -159,27 +159,6 @@ font-weight: bold;</string>
      <string>接收文件</string>
     </property>
    </widget>
-   <widget class="QPushButton" name="pushButton_quit">
-    <property name="geometry">
-     <rect>
-      <x>660</x>
-      <y>10</y>
-      <width>71</width>
-      <height>41</height>
-     </rect>
-    </property>
-    <property name="styleSheet">
-     <string notr="true">background-color: #eee;
-color: black;
-border: 1px solid #555;
-padding: 10px 20px;
-font-size: 16px;
-font-weight: bold;</string>
-    </property>
-    <property name="text">
-     <string>退出</string>
-    </property>
-   </widget>
    <widget class="QLabel" name="label">
     <property name="geometry">
      <rect>

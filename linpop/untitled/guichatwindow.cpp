@@ -15,6 +15,7 @@ GuiChatWindow::GuiChatWindow(QWidget *parent) :
     ui(new Ui::GuiChatWindow)
 {
     ui->setupUi(this);
+    setWindowTitle("与"+otheruser.name+"的会话");
 //    ui->label_title->setText("您正在与"+otheruser.name+"进行对话");
     is_open_chatdialog = true;
     tcpSocket = new QTcpSocket();

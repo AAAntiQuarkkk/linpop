@@ -29,6 +29,7 @@ MainWindow::MainWindow(QWidget *parent) :
     ui(new Ui::MainWindow)
 {
     ui->setupUi(this);
+    setWindowTitle("Linpop");
     ui->label_userWelcome->setText("当前登录用户："+user.name);
 
     QPixmap *pix = new QPixmap(":/main2.png");
@@ -39,7 +40,7 @@ MainWindow::MainWindow(QWidget *parent) :
     ui->pushButton_deleteFriend->installEventFilter(this);
     ui->pushButton->installEventFilter(this);
     ui->pushButton_sendFile->installEventFilter(this);
-    ui->pushButton_quit->installEventFilter(this);
+    //ui->pushButton_quit->installEventFilter(this);
 
     timer = new QTimer();
     timer->start(500);
@@ -194,7 +195,7 @@ void MainWindow::Createdfriendlist()
                 {
                     listnum = 0;
                     ui->listWidget_friendList->clear();
-                    ui->listWidget_friendList->insertItem(0,tr("您没有朋友"));
+                    ui->listWidget_friendList->insertItem(0,tr("暂无已添加好友"));
                 }
 //                ui->pushButton_startchat->setEnabled(false);
 //                ui->pushButton_deletepeople->setEnabled(false);
@@ -244,7 +245,7 @@ void MainWindow::on_pushButton_addFriend_clicked()
                     }
                     else if( QString(buffer).section("##",0,0) == QString("add_friend_error"))
                     {
-                        QMessageBox::warning(this, "Warning!", "查无此人", QMessageBox::Yes);
+                        QMessageBox::warning(this, "Warning!", "添加失败，该用户不存在", QMessageBox::Yes);
                     }
                 });
             }
@@ -435,6 +436,7 @@ void MainWindow::closeEvent(QCloseEvent *event)
     }
 }
 
+/*
 void MainWindow::on_pushButton_quit_clicked()
 {//退出登录
     this->close();
@@ -442,6 +444,7 @@ void MainWindow::on_pushButton_quit_clicked()
     Login *log = new Login();
     log->show();
 }
+*/
 
 bool MainWindow::eventFilter(QObject *obj, QEvent *event)
 {
@@ -482,7 +485,7 @@ bool MainWindow::eventFilter(QObject *obj, QEvent *event)
         {
             ui->label_3->setText("");
         }
-    }else if(obj == ui->pushButton_quit){
+    }/*else if(obj == ui->pushButton_quit){
         if (event->type() == QEvent::Enter)
         {
             ui->label_3->setText("Tips: 退出登录，切换用户");
@@ -491,6 +494,6 @@ bool MainWindow::eventFilter(QObject *obj, QEvent *event)
         {
             ui->label_3->setText("");
         }
-    }
+    }*/
     return QMainWindow::eventFilter(obj, event);
 }
