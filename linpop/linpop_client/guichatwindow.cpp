@@ -94,28 +94,21 @@ void GuiChatWindow::getchathistory()
         tcpSocket->flush();
         connect(tcpSocket,&QTcpSocket::readyRead,[=](){
             QByteArray buffer = tcpSocket->readAll();
-            if(QString(buffer).section("##",0,0)==QString("chat_history_ok"))
-            {
-                QString chatshow = "";
-                int num = QString(buffer).section("##",1,1).toInt();
-                for(int rownum = 0;rownum < num ;rownum++)
-                {
-                    QDateTime time = QDateTime::fromString( QString(buffer).section("##",rownum*3+2,rownum*3+2),"yyyy-MM-dd hh:mm:ss.zzz");
-                    qDebug()<<time.toString();
+            if (QString(buffer).section("##", 0, 0) == QString("chat_history_ok")) {
+                QString chatshow = "<html><body>";
+                int num = QString(buffer).section("##", 1, 1).toInt();
+                for (int rownum = num - 1; rownum >= 0; rownum--) { // 倒序显示消息
+                    QDateTime time = QDateTime::fromString(QString(buffer).section("##", rownum * 3 + 2, rownum * 3 + 2), "yyyy-MM-dd hh:mm:ss.zzz");
+                    qDebug() << time.toString();
                     QString timeshow = time.toString("MM-dd hh:mm:ss");
-                    qDebug()<<timeshow;
-                    QString idshow = "";
-                    if(QString(buffer).section("##",rownum*3+3,rownum*3+3).toInt()==user.id)
-                    {//我自己发送的消息
-                        idshow = " 我：";
-                    }
-                    else
-                    {
-                        idshow =" "+ otheruser.name + "：";
-                    }
-                    chatshow = "("+timeshow+")" + idshow + QString(buffer).section("##",rownum*3+4,rownum*3+4) +"\n" + chatshow;
+                    qDebug() << timeshow;
+                    // 根据发送者应用不同的对其方式
+                    QString messageContent = QString(buffer).section("##", rownum * 3 + 4, rownum * 3 + 4);
+                    QString messageAlignment = (QString(buffer).section("##", rownum * 3 + 3, rownum * 3 + 3).toInt() == user.id) ? "right" : "left";
+                    chatshow += "<div style='text-align:" + messageAlignment + ";'>" + timeshow + "<br>" + messageContent + "</div>";
                 }
-                ui->textBrowser_msgShow->setText(chatshow);
+                chatshow += "</body></html>";
+                ui->textBrowser_msgShow->setHtml(chatshow);
             }
             else if(QString(buffer).section("##",0,0)==QString("chat_history_error"))
             {

@@ -24,12 +24,12 @@
 </string>
   </property>
   <widget class="QWidget" name="centralwidget">
-   <widget class="QWidget" name="">
+   <widget class="QWidget" name="layoutWidget">
     <property name="geometry">
      <rect>
       <x>40</x>
       <y>20</y>
-      <width>446</width>
+      <width>449</width>
       <height>581</height>
      </rect>
     </property>
@@ -53,6 +53,12 @@ text-align: center;</string>
       <layout class="QHBoxLayout" name="horizontalLayout">
        <item>
         <widget class="QPushButton" name="pushButton_addFriend">
+         <property name="font">
+          <font>
+           <pointsize>-1</pointsize>
+           <bold>true</bold>
+          </font>
+         </property>
          <property name="styleSheet">
           <string notr="true">background-color: #eee;
 color: black;
@@ -145,21 +151,6 @@ text-align: center;</string>
      </item>
      <item>
       <widget class="QListWidget" name="listWidget_friendList"/>
-     </item>
-     <item>
-      <widget class="QPushButton" name="pushButton_startChat">
-       <property name="styleSheet">
-        <string notr="true">background-color: #fff;
-color: black;
-border: 1px solid gray;
-padding: 10px 20px;
-font-size: 16px;
-font-weight: bold;</string>
-       </property>
-       <property name="text">
-        <string>开启会话</string>
-       </property>
-      </widget>
      </item>
     </layout>
    </widget>

@@ -4,6 +4,7 @@
 #include <login.h>
 #include <sendfile.h>
 #include <receivefile.h>
+#include <QHBoxLayout>
 
 extern userinfo user;
 userinfo otheruser;
@@ -30,6 +31,10 @@ MainWindow::MainWindow(QWidget *parent) :
 {
     ui->setupUi(this);
     setWindowTitle("Linpop");
+    ui->label->setStyleSheet("background-color: transparent;");
+    ui->label_3->setStyleSheet("background-color: transparent;");
+    ui->label_userWelcome->setStyleSheet("background-color: transparent;");
+    ui->label_userWelcome->setStyleSheet("font-size: 16px; font-weight: bold;");
     ui->label_userWelcome->setText("欢迎,"+user.name);
 
     //显示Tips用
@@ -67,7 +72,7 @@ void MainWindow::Createdfriendlist()
     }
     else if(friendlist.length()!=0 && !is_open_chatdialog)
     {
-        ui->pushButton_startChat->setEnabled(true);
+        //ui->pushButton_startChat->setEnabled(true);
         ui->pushButton_sendFile->setEnabled(true);
 
 //        ui->pushButton_startchat->setEnabled(true);
@@ -77,7 +82,7 @@ void MainWindow::Createdfriendlist()
     }
     else if(friendlist.length()==0 && !is_open_chatdialog)
     {
-        ui->pushButton_startChat->setEnabled(false);
+        //ui->pushButton_startChat->setEnabled(false);
         ui->pushButton_sendFile->setEnabled(false);
 
 //        ui->pushButton_startchat->setEnabled(false);
@@ -144,7 +149,7 @@ void MainWindow::Createdfriendlist()
                             {
                                 if(friendsendfile == '1')
                                 {
-                                    ui->listWidget_friendList->insertItem(rownum,tr((friendname + "(在线，想给您发文件，有新消息)").toUtf8()));
+                                    addFriendList(friendname,"在线，请求发送文件，有新消息");
                                     QPoint pos = this->pos();
                                       //动画还没有结束就先立马停止，防止用户不停的点击
                                       if(pShakeAnimation->state() == QPropertyAnimation::Running)
@@ -168,7 +173,7 @@ void MainWindow::Createdfriendlist()
                                 }
                                 else
                                 {
-                                    ui->listWidget_friendList->insertItem(rownum,tr((friendname + "(在线，有新消息)").toUtf8()));
+                                    addFriendList(friendname,"在线，有新消息");
                                     QPoint pos = this->pos();
                                       if(pShakeAnimation->state() == QPropertyAnimation::Running)
                                         {
@@ -194,11 +199,11 @@ void MainWindow::Createdfriendlist()
                             {
                                 if(friendsendfile == '1')
                                 {
-                                    ui->listWidget_friendList->insertItem(rownum,tr((friendname + "(在线，想给您发文件)").toUtf8()));
+                                    addFriendList(friendname,"在线，请求发送文件");
                                 }
                                 else
                                 {
-                                    ui->listWidget_friendList->insertItem(rownum,tr((friendname + "(在线)").toUtf8()));
+                                    addFriendList(friendname,"在线");
                                 }
                             }
                         }
@@ -206,22 +211,19 @@ void MainWindow::Createdfriendlist()
                         {
                             if(friendsendmassage == '1')
                             {
-                                ui->listWidget_friendList->insertItem(rownum,tr((friendname + "(不在线，有新消息)").toUtf8()));
+                                addFriendList(friendname,"离线，有新消息");
                             }
                             else
                             {
-                                ui->listWidget_friendList->insertItem(rownum,tr((friendname + "(不在线)").toUtf8()));
+                                addFriendList(friendname,"离线");
                             }
                         }
                     }
 
-                    //删除还没弄
-
-//                    ui->pushButton_deletepeople->setEnabled(true);
                     if(!is_open_chatdialog)
                     {
-                        ui->pushButton_startChat->setEnabled(true);
-//                        ui->pushButton_receivefile->setEnabled(true);
+                        //ui->pushButton_startChat->setEnabled(true);
+                        //ui->pushButton_receivefile->setEnabled(true);
                         ui->pushButton_sendFile->setEnabled(true);
                     }
                 }
@@ -232,7 +234,9 @@ void MainWindow::Createdfriendlist()
                 {
                     listnum = 0;
                     ui->listWidget_friendList->clear();
-                    ui->listWidget_friendList->insertItem(0,tr("暂无已添加好友"));
+                    QListWidgetItem *item = new QListWidgetItem(tr("暂无已添加好友"));
+                    item->setFlags(item->flags() & ~Qt::ItemIsEnabled); // 设置成不能点击
+                    ui->listWidget_friendList->insertItem(0, item);
                 }
 //                ui->pushButton_startchat->setEnabled(false);
 //                ui->pushButton_deletepeople->setEnabled(false);
@@ -244,6 +248,14 @@ void MainWindow::Createdfriendlist()
 }
 }
 
+void MainWindow::addFriendList(QString friendname, QString friendstatuetext)
+{
+    // 构造好友列表项的文本，包括好友名字和状态
+    QString listItemText = QString("%1\n%2").arg(friendname).arg(friendstatuetext);
+    QListWidgetItem *item = new QListWidgetItem();
+    item->setText(listItemText);
+    ui->listWidget_friendList->addItem(item);
+}
 
 
 void MainWindow::on_pushButton_addFriend_clicked()
@@ -294,7 +306,7 @@ void MainWindow::on_pushButton_addFriend_clicked()
     }
 }
 
-
+/*
 void MainWindow::on_pushButton_startChat_clicked()
 {
     if(ui->listWidget_friendList->currentRow()!=-1)
@@ -334,6 +346,42 @@ void MainWindow::on_pushButton_startChat_clicked()
     else
     {
         QMessageBox::warning(this, "Warning!", "您未选择联系人", QMessageBox::Yes);
+    }
+}
+*/
+
+void MainWindow::on_listWidget_friendList_itemDoubleClicked(QListWidgetItem *item) //双击开启会话
+{
+    QString friendname = friendlist.at(ui->listWidget_friendList->currentRow());
+
+    tcpSocket = new QTcpSocket();
+    tcpSocket->abort();//取消已有链接
+    tcpSocket->connectToHost(hostip, hosthost);//链接服务器
+    if(!tcpSocket->waitForConnected(30000))
+    {
+        QMessageBox::warning(this, "Warning!", "网络错误", QMessageBox::Yes);
+        this->close();
+        user.islogin = false;
+        Login *login = new Login();
+        login->show();
+    }
+    else
+    {//服务器连接成功
+        QString message = QString("wantsendmessage##%1##%2").arg(user.id).arg(friendname);
+        tcpSocket->write(message.toUtf8());
+        tcpSocket->flush();
+
+        connect(tcpSocket,&QTcpSocket::readyRead,[=](){
+            QByteArray buffer = tcpSocket->readAll();
+            if( QString(buffer).section("##",0,0) == QString("wantsendmessage_ok"))
+            {//开启会话
+                otheruser.id = QString(buffer).section("##",1,1).toInt();
+                otheruser.name = friendname;
+                //ui->pushButton_startChat->setEnabled(false);
+                GuiChatWindow *cht = new GuiChatWindow();
+                cht->show();
+            }
+        });
     }
 }
 

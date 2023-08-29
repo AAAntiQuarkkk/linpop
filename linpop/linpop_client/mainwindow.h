@@ -8,7 +8,7 @@
 #include <qinputdialog.h>
 #include <QMessageBox>
 #include <QTimer>
-
+#include <QListWidgetItem>
 #include <guichatwindow.h>
 #include <userinfo.h>
 
@@ -37,7 +37,7 @@ private slots:
 
     void on_pushButton_addFriend_clicked();
 
-    void on_pushButton_startChat_clicked();
+    //void on_pushButton_startChat_clicked();
 
     void on_pushButton_deleteFriend_clicked();
 
@@ -47,6 +47,8 @@ private slots:
 
     //void on_pushButton_quit_clicked();
 
+    void on_listWidget_friendList_itemDoubleClicked(QListWidgetItem *item);
+
 protected:
     void closeEvent(QCloseEvent *event);
 
@@ -54,6 +56,7 @@ private:
     Ui::MainWindow *ui;
     QTcpSocket *tcpSocket;
     QPropertyAnimation *pShakeAnimation = nullptr;
+    void addFriendList(QString friendname, QString friendstatuetext);
 };
 
 #endif // MAINWINDOW_H
