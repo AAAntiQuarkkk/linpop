@@ -3,5 +3,9 @@
         <file>login.png</file>
         <file>register.png</file>
         <file>main2.png</file>
+        <file>login-logo.png</file>
+        <file>login-bg.jpg</file>
+        <file>main-bg.jpg</file>
+        <file>chat-bg.jpg</file>
     </qresource>
 </RCC>

@@ -16,6 +16,7 @@
 namespace Ui {
 class MainWindow;
 }
+class QPropertyAnimation;
 
 class MainWindow : public QMainWindow
 {
@@ -52,6 +53,7 @@ protected:
 private:
     Ui::MainWindow *ui;
     QTcpSocket *tcpSocket;
+    QPropertyAnimation *pShakeAnimation = nullptr;
 };
 
 #endif // MAINWINDOW_H

@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>745</width>
-    <height>474</height>
+    <width>530</width>
+    <height>638</height>
    </rect>
   </property>
   <property name="minimumSize">
@@ -20,199 +20,148 @@
    <string>MainWindow</string>
   </property>
   <property name="styleSheet">
-   <string notr="true">background-color: rgb(255, 255, 255);</string>
+   <string notr="true">#MainWindow{border-image: url(:/main-bg.jpg);}
+</string>
   </property>
   <widget class="QWidget" name="centralwidget">
-   <widget class="QListWidget" name="listWidget_friendList">
+   <widget class="QWidget" name="">
     <property name="geometry">
      <rect>
-      <x>10</x>
-      <y>50</y>
-      <width>281</width>
-      <height>371</height>
+      <x>40</x>
+      <y>20</y>
+      <width>446</width>
+      <height>581</height>
      </rect>
     </property>
-   </widget>
-   <widget class="QPushButton" name="pushButton_addFriend">
-    <property name="geometry">
-     <rect>
-      <x>310</x>
-      <y>90</y>
-      <width>111</width>
-      <height>41</height>
-     </rect>
-    </property>
-    <property name="styleSheet">
-     <string notr="true">background-color: #eee;
+    <layout class="QVBoxLayout" name="verticalLayout">
+     <item>
+      <widget class="QLabel" name="label_userWelcome">
+       <property name="styleSheet">
+        <string notr="true">font-family: Arial, sans-serif;
+font-size: 18px;
+font-weight: bold;
+color: #333;
+background-color: #fff;
+text-align: center;</string>
+       </property>
+       <property name="text">
+        <string>TextLabel</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <layout class="QHBoxLayout" name="horizontalLayout">
+       <item>
+        <widget class="QPushButton" name="pushButton_addFriend">
+         <property name="styleSheet">
+          <string notr="true">background-color: #eee;
 color: black;
 border: 1px solid #555;
 padding: 10px 20px;
 font-size: 16px;
 font-weight: bold;</string>
-    </property>
-    <property name="text">
-     <string>添加好友</string>
-    </property>
-   </widget>
-   <widget class="QPushButton" name="pushButton_startChat">
-    <property name="geometry">
-     <rect>
-      <x>10</x>
-      <y>410</y>
-      <width>281</width>
-      <height>41</height>
-     </rect>
-    </property>
-    <property name="styleSheet">
-     <string notr="true">background-color: #fff;
+         </property>
+         <property name="text">
+          <string>添加好友</string>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QPushButton" name="pushButton_deleteFriend">
+         <property name="styleSheet">
+          <string notr="true">background-color: #eee;
+color: black;
+border: 1px solid #555;
+padding: 10px 20px;
+font-size: 16px;
+font-weight: bold;</string>
+         </property>
+         <property name="text">
+          <string>删除好友</string>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QPushButton" name="pushButton">
+         <property name="styleSheet">
+          <string notr="true">background-color: #eee;
+color: black;
+border: 1px solid #555;
+padding: 10px 20px;
+font-size: 16px;
+font-weight: bold;</string>
+         </property>
+         <property name="text">
+          <string>接收文件</string>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QPushButton" name="pushButton_sendFile">
+         <property name="styleSheet">
+          <string notr="true">background-color: #eee;
+color: black;
+border: 1px solid #555;
+padding: 10px 20px;
+font-size: 16px;
+font-weight: bold;</string>
+         </property>
+         <property name="text">
+          <string>发送文件</string>
+         </property>
+        </widget>
+       </item>
+      </layout>
+     </item>
+     <item>
+      <widget class="QLabel" name="label_3">
+       <property name="styleSheet">
+        <string notr="true">font-family: Arial, sans-serif;
+font-size: 18px;
+font-weight: bold;
+color: #333;
+background-color: #fff;
+text-align: center;</string>
+       </property>
+       <property name="text">
+        <string>Tips:</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QLabel" name="label">
+       <property name="styleSheet">
+        <string notr="true">font-family: Arial, sans-serif;
+font-size: 18px;
+font-weight: bold;
+color: #333;
+background-color: #fff;
+text-align: center;</string>
+       </property>
+       <property name="text">
+        <string>联系人列表:</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QListWidget" name="listWidget_friendList"/>
+     </item>
+     <item>
+      <widget class="QPushButton" name="pushButton_startChat">
+       <property name="styleSheet">
+        <string notr="true">background-color: #fff;
 color: black;
 border: 1px solid gray;
 padding: 10px 20px;
 font-size: 16px;
 font-weight: bold;</string>
-    </property>
-    <property name="text">
-     <string>开启会话</string>
-    </property>
-   </widget>
-   <widget class="QPushButton" name="pushButton_sendFile">
-    <property name="geometry">
-     <rect>
-      <x>310</x>
-      <y>330</y>
-      <width>111</width>
-      <height>41</height>
-     </rect>
-    </property>
-    <property name="styleSheet">
-     <string notr="true">background-color: #eee;
-color: black;
-border: 1px solid #555;
-padding: 10px 20px;
-font-size: 16px;
-font-weight: bold;</string>
-    </property>
-    <property name="text">
-     <string>发送文件</string>
-    </property>
-   </widget>
-   <widget class="QLabel" name="label_userWelcome">
-    <property name="geometry">
-     <rect>
-      <x>310</x>
-      <y>10</y>
-      <width>341</width>
-      <height>41</height>
-     </rect>
-    </property>
-    <property name="styleSheet">
-     <string notr="true">font-family: Arial, sans-serif;
-font-size: 18px;
-font-weight: bold;
-color: #333;
-background-color: #fff;
-text-align: center;</string>
-    </property>
-    <property name="text">
-     <string>TextLabel</string>
-    </property>
-   </widget>
-   <widget class="QPushButton" name="pushButton_deleteFriend">
-    <property name="geometry">
-     <rect>
-      <x>310</x>
-      <y>170</y>
-      <width>111</width>
-      <height>41</height>
-     </rect>
-    </property>
-    <property name="styleSheet">
-     <string notr="true">background-color: #eee;
-color: black;
-border: 1px solid #555;
-padding: 10px 20px;
-font-size: 16px;
-font-weight: bold;</string>
-    </property>
-    <property name="text">
-     <string>删除好友</string>
-    </property>
-   </widget>
-   <widget class="QPushButton" name="pushButton">
-    <property name="geometry">
-     <rect>
-      <x>310</x>
-      <y>250</y>
-      <width>111</width>
-      <height>41</height>
-     </rect>
-    </property>
-    <property name="styleSheet">
-     <string notr="true">background-color: #eee;
-color: black;
-border: 1px solid #555;
-padding: 10px 20px;
-font-size: 16px;
-font-weight: bold;</string>
-    </property>
-    <property name="text">
-     <string>接收文件</string>
-    </property>
-   </widget>
-   <widget class="QLabel" name="label">
-    <property name="geometry">
-     <rect>
-      <x>10</x>
-      <y>10</y>
-      <width>221</width>
-      <height>31</height>
-     </rect>
-    </property>
-    <property name="styleSheet">
-     <string notr="true">font-family: Arial, sans-serif;
-font-size: 18px;
-font-weight: bold;
-color: #333;
-background-color: #fff;
-text-align: center;</string>
-    </property>
-    <property name="text">
-     <string>联系人列表:</string>
-    </property>
-   </widget>
-   <widget class="QLabel" name="label_2">
-    <property name="geometry">
-     <rect>
-      <x>440</x>
-      <y>80</y>
-      <width>291</width>
-      <height>301</height>
-     </rect>
-    </property>
-    <property name="text">
-     <string/>
-    </property>
-   </widget>
-   <widget class="QLabel" name="label_3">
-    <property name="geometry">
-     <rect>
-      <x>310</x>
-      <y>400</y>
-      <width>431</width>
-      <height>41</height>
-     </rect>
-    </property>
-    <property name="styleSheet">
-     <string notr="true">font-family: Arial, sans-serif;
-font-size: 18px;
-font-weight: bold;
-color: #333;
-background-color: #fff;
-text-align: center;</string>
-    </property>
-    <property name="text">
-     <string/>
-    </property>
+       </property>
+       <property name="text">
+        <string>开启会话</string>
+       </property>
+      </widget>
+     </item>
+    </layout>
    </widget>
   </widget>
   <widget class="QStatusBar" name="statusbar"/>

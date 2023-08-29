@@ -30,11 +30,8 @@ MainWindow::MainWindow(QWidget *parent) :
 {
     ui->setupUi(this);
     setWindowTitle("Linpop");
-    ui->label_userWelcome->setText("当前登录用户："+user.name);
+    ui->label_userWelcome->setText("欢迎,"+user.name);
 
-    QPixmap *pix = new QPixmap(":/main2.png");
-    QSize sz = ui->label_2->size();
-    ui->label_2->setPixmap(pix->scaled(sz));
     //显示Tips用
     ui->pushButton_addFriend->installEventFilter(this);
     ui->pushButton_deleteFriend->installEventFilter(this);
@@ -45,6 +42,7 @@ MainWindow::MainWindow(QWidget *parent) :
     timer = new QTimer();
     timer->start(500);
     connect(timer,SIGNAL(timeout()),this,SLOT(Createdfriendlist()));
+    pShakeAnimation = new QPropertyAnimation(this,"pos");
 }
 
 MainWindow::~MainWindow()
@@ -147,10 +145,49 @@ void MainWindow::Createdfriendlist()
                                 if(friendsendfile == '1')
                                 {
                                     ui->listWidget_friendList->insertItem(rownum,tr((friendname + "(在线，想给您发文件，有新消息)").toUtf8()));
+                                    QPoint pos = this->pos();
+                                      //动画还没有结束就先立马停止，防止用户不停的点击
+                                      if(pShakeAnimation->state() == QPropertyAnimation::Running)
+                                        {
+                                          pShakeAnimation->stop();
+                                        }
+                                      pShakeAnimation->setDuration(600);
+                                      pShakeAnimation->setStartValue(pos);
+
+                                      int offset =0;
+                                      double dOffset = (double)1/30;
+                                      double dIndex =dOffset;
+                                      for(int i=1;i<30;i++){
+                                          offset = i%2==0?-10:10;
+                                          dIndex += dOffset;
+                                          pShakeAnimation->setKeyValueAt(dIndex,pos + QPoint((int)offset,(int)offset));
+                                        }
+
+                                      pShakeAnimation->setEndValue(pos);
+                                      pShakeAnimation->start();
                                 }
                                 else
                                 {
                                     ui->listWidget_friendList->insertItem(rownum,tr((friendname + "(在线，有新消息)").toUtf8()));
+                                    QPoint pos = this->pos();
+                                      if(pShakeAnimation->state() == QPropertyAnimation::Running)
+                                        {
+                                          pShakeAnimation->stop();
+                                        }
+                                      pShakeAnimation->setDuration(600);
+                                      pShakeAnimation->setStartValue(pos);
+
+                                      int offset =0;
+                                      double dOffset = (double)1/30;
+                                      double dIndex =dOffset;
+                                      for(int i=1;i<30;i++){
+                                          offset = i%2==0?-10:10;
+                                          dIndex += dOffset;
+                                          pShakeAnimation->setKeyValueAt(dIndex,pos + QPoint((int)offset,(int)offset));
+                                        }
+
+                                      pShakeAnimation->setEndValue(pos);
+                                      pShakeAnimation->start();
                                 }
                             }
                             else
@@ -456,7 +493,7 @@ bool MainWindow::eventFilter(QObject *obj, QEvent *event)
         }
         else if (event->type() == QEvent::Leave)
         {
-            ui->label_3->setText("");
+            ui->label_3->setText("Tips:");
         }
     }else if(obj == ui->pushButton_deleteFriend){
         if (event->type() == QEvent::Enter)
@@ -465,7 +502,7 @@ bool MainWindow::eventFilter(QObject *obj, QEvent *event)
         }
         else if (event->type() == QEvent::Leave)
         {
-            ui->label_3->setText("");
+            ui->label_3->setText("Tips:");
         }
     }else if(obj == ui->pushButton){
         if (event->type() == QEvent::Enter)
@@ -474,7 +511,7 @@ bool MainWindow::eventFilter(QObject *obj, QEvent *event)
         }
         else if (event->type() == QEvent::Leave)
         {
-            ui->label_3->setText("");
+            ui->label_3->setText("Tips:");
         }
     }else if(obj == ui->pushButton_sendFile){
         if (event->type() == QEvent::Enter)
@@ -483,7 +520,7 @@ bool MainWindow::eventFilter(QObject *obj, QEvent *event)
         }
         else if (event->type() == QEvent::Leave)
         {
-            ui->label_3->setText("");
+            ui->label_3->setText("Tips:");
         }
     }/*else if(obj == ui->pushButton_quit){
         if (event->type() == QEvent::Enter)
