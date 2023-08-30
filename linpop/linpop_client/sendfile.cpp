@@ -107,7 +107,7 @@ void SendFile::on_pushButton_clicked()
     sendThread->moveToThread(fileThread);
     connect(fileThread,&QThread::finished,fileThread,&QObject::deleteLater);
     connect(fileThread,&QThread::finished,sendThread,&QObject::deleteLater);
-    connect(this,SIGNAL(startThread(ushort,QString,QString)),sendThread,SLOT(initThread(ushort,QString,QString)));
+    QMetaObject::Connection handler = connect(this,SIGNAL(startThread(ushort,QString,QString)),sendThread,SLOT(initThread(ushort,QString,QString)),Qt::UniqueConnection);
     connect(sendThread,SIGNAL(sigConnect(bool)),this,SLOT(doSigConnect(bool)));
     connect(sendThread,SIGNAL(refFileInfo(QString,qint64)),this,SLOT(doRefFileInfo(QString,qint64)));
     connect(sendThread,SIGNAL(sigOver(QString,bool)),this,SLOT(doSigOver(QString,bool)));
@@ -128,6 +128,7 @@ void SendFile::on_pushButton_clicked()
 
     fileThread->start();
     emit startThread(port,targetIp,fileID);
+    disconnect(handler);
 }
 
 void SendFile::closeEvent(QCloseEvent *event)

@@ -45,12 +45,13 @@ void ReceiveFile::copeNewConnection(qintptr _sock) {
     connect(fileThread,&QThread::finished,fileThread,&QObject::deleteLater);
     connect(fileThread,&QThread::finished,receiveThread,&QObject::deleteLater);
     //connect(fileThread,&QThread::finished,tcpSocket,&QObject::deleteLater);
-    connect(this,SIGNAL(startThread(qintptr)),receiveThread,SLOT(initThread(qintptr)));
+    QMetaObject::Connection handler = connect(this,SIGNAL(startThread(qintptr)),receiveThread,SLOT(initThread(qintptr)),Qt::UniqueConnection);
     connect(receiveThread,SIGNAL(refFileInfo(QString,QString,qint64,qint64)),this,SLOT(doRefFileInfo(QString,QString,qint64,qint64)));
     connect(receiveThread,SIGNAL(sigOver(QString,bool)),this,SLOT(doSigOver(QString,bool)));
 
     fileThread->start();
     emit startThread(_sock);
+    disconnect(handler);
 }
 
 bool ReceiveFile::getReceiveFirst(QString name) {
