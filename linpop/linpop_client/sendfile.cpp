@@ -4,7 +4,8 @@
 
 #include <QFileDialog>
 #include <QMessageBox>
-#include <QFileInfo>
+#include <QNetworkInterface>
+#include <QDebug>
 
 extern userinfo user;
 extern userinfo otheruser;
@@ -12,47 +13,62 @@ extern bool is_open_chatdialog;
 extern int hosthost;
 extern QString hostip;
 
-sendFile::sendFile(QWidget *parent) :
-    QWidget(parent),
-    ui(new Ui::sendFile)
+SendFile::SendFile(QString clientIP, QWidget *parent) :
+    QMainWindow(parent),
+    ui(new Ui::SendFile)
 {
     ui->setupUi(this);
-    is_open_chatdialog = true;
-    connect(&timer,&QTimer::timeout,[=](){
-        //关闭定时器
-        timer.stop();
-        //发送文件
-        sendData();
-    });
-
-    ui->label->setText("您即将给"+otheruser.name+"发送文件");
-
-    int sendport = 9988;//开放9988端口用于接受端连接
-    tcpServer = new QTcpServer(this);
-    tcpServer->listen(QHostAddress::Any,sendport);
-
-    connect(tcpServer,&QTcpServer::newConnection,[=](){
-        tcpSocket = tcpServer->nextPendingConnection();
-        QString ip = tcpSocket->peerAddress().toString().section(":",3,3);
-        QString showmessage = ip + "已连接";
-        ui->pushButton_2->setEnabled(true);
-        connect(tcpSocket,&QTcpSocket::readyRead,[=](){
-            QByteArray buffer = tcpSocket->readAll();
-            qDebug()<<buffer;
-            if("send_ok" == QString(buffer)){
-                this->close();
-            }
-        });
-    });
-    ui->pushButton_2->setEnabled(false);
+    ui->lineEdit->setText(clientIP);
 }
 
-sendFile::~sendFile()
+SendFile::~SendFile()
 {
     delete ui;
 }
 
-void sendFile::on_pushButton_clicked()
+
+ProcessBarSend* SendFile::getProcessBarSend(QString fileID) {
+    QMap<QString,ProcessBarSend*>::iterator itor;
+    for(itor = m_mapSend.begin();itor != m_mapSend.end();++itor) {
+        if(itor.key() == fileID) {
+            return itor.value();
+        }
+    }
+}
+
+QThread* SendFile::getSendFileThread(QString fileID) {
+    QMap<QString,QThread*>::iterator itor;
+    for(itor = m_mapClient.begin();itor != m_mapClient.end();++itor) {
+        if(itor.key() == fileID) {
+            return itor.value();
+        }
+    }
+}
+
+void SendFile::doSigConnect(bool connected) {
+    if(!connected) {
+        fileThread->exit();
+        fileThread->wait();
+        fileThread->deleteLater();
+        QMessageBox::information(this,"错误！","无法连接到用户");
+    }
+}
+
+void SendFile::doRefFileInfo(QString name,qint64 receivedSize) {
+    qDebug()<<"sendFile"<<name;
+    qApp->processEvents();
+    getProcessBarSend(name)->updateProcess(receivedSize);
+}
+
+void SendFile::doSigOver(QString name,bool over) {
+    QThread* thread = getSendFileThread(name);
+    thread->exit();
+    thread->wait();
+    thread->deleteLater();
+    getProcessBarSend(name)->setStatus(over);
+}
+
+void SendFile::on_pushButton_clicked()
 {
     QString filePath = QFileDialog::getOpenFileName(this,"选择文件","../");
     //若文件路径无效，则提示
@@ -61,75 +77,65 @@ void sendFile::on_pushButton_clicked()
         QMessageBox::information(this,"Error: ",filePath+"文件路径无效");
         return;
     }
-    fileName.clear();
-    fileSize = 0;
-    sendSize = 0;
-    //获取文件信息
+    /*
+    //获取发送端IP
+    QString hostIp;
+    QList<QHostAddress> AddressList = QNetworkInterface::allAddresses();
+    foreach(QHostAddress address, AddressList){
+        if(address.protocol() == QAbstractSocket::IPv4Protocol &&
+            address != QHostAddress::Null &&
+            address != QHostAddress::LocalHost){
+            if (address.toString().contains("127.0.")){
+                continue;
+            }
+            hostIp = address.toString();
+            break;
+        }
+    }
+    */
+    //获取时间
+    QString currentDateTime = (QDateTime::currentDateTime()).toString("MMddhhmmsszzz");
+
     QFileInfo info(filePath);
-    fileName = info.fileName();
-    fileSize = info.size();
 
-    //指定文件的名称
-    file.setFileName(filePath);
-    //以只读方式打开文件
-    bool isOK = file.open(QIODevice::ReadOnly);
-    if(!isOK)
-    {
-        QMessageBox::information(this,"Error:","只读方式打开文件失败");
-        return;
-    }
-    else
-    {
-        //提示打开文件路径
-        //ui->label_message->setText("选择文件成功："+filePath);
-        ui->pushButton->setEnabled(false);
-    }
+    QString targetIp = ui->lineEdit->text();
+    ushort port = 9988;
+    QString fileID = filePath+"##"+currentDateTime;
+
+    sendThread = new SendFileThread();
+    fileThread = new QThread();
+    sendThread->moveToThread(fileThread);
+    connect(fileThread,&QThread::finished,fileThread,&QObject::deleteLater);
+    connect(fileThread,&QThread::finished,sendThread,&QObject::deleteLater);
+    connect(this,SIGNAL(startThread(ushort,QString,QString)),sendThread,SLOT(initThread(ushort,QString,QString)));
+    connect(sendThread,SIGNAL(sigConnect(bool)),this,SLOT(doSigConnect(bool)));
+    connect(sendThread,SIGNAL(refFileInfo(QString,qint64)),this,SLOT(doRefFileInfo(QString,qint64)));
+    connect(sendThread,SIGNAL(sigOver(QString,bool)),this,SLOT(doSigOver(QString,bool)));
+
+    connect(sendThread,&SendFileThread::sigConnect,this,[=](bool connected){
+        qDebug()<<"测试"<<connected;
+        if(connected) {
+            ProcessBarSend* processBarSend = new ProcessBarSend(info.fileName(),info.size());
+            ui->verticalLayout_2->addWidget(processBarSend);
+            qDebug()<<"filePath:"<<info.fileName()<<":"<<info.size();
+
+            /*字典，<处理后的文件名，线程>，*/
+            m_mapClient.insert(info.fileName()+"##"+currentDateTime,fileThread);//有风险的操作，fileThread可能会改变
+            /*字典，<处理后的文件名，传输界面>，*/
+            m_mapSend.insert(info.fileName()+"##"+currentDateTime,processBarSend);
+        }
+    });
+
+    fileThread->start();
+    emit startThread(port,targetIp,fileID);
 }
 
-void sendFile::sendData()
-{
-    quint64 len = 0;
-    do
-    {
-        //每次发送数据的大小
-        char buf[1024] = {0};
-        len = 0;
-        //往文件里读数据
-        len = file.read(buf,sizeof(buf));
-        //发送数据，读多少，发多少
-        len = tcpSocket->write(buf,len);
-        sendSize += len;
-    }
-    while(len >0);
-    QMessageBox::information(this,"Success:","发送完毕");
-    this->close();
-}
-
-void sendFile::on_pushButton_2_clicked()
-{
-    //先发送文件头信息 文件名##文件大小
-    QString head = QString("%1##%2").arg(fileName).arg(fileSize);
-    //发送头部信息
-    qint64 len = tcpSocket->write(head.toUtf8());
-    //判断信息是否发送成功
-    if(len > 0)
-    {
-        //发送文件信息，防止tcp黏包信息，定时器延时
-        timer.start(20);
-    }
-    else
-    {
-        QMessageBox::information(this,"Error:","头部信息发送失败");
-        file.close();
-        return;
-    }
-}
-
-void sendFile::closeEvent(QCloseEvent *event)
+void SendFile::closeEvent(QCloseEvent *event)
 {
     tcpSocket = new QTcpSocket();
     tcpSocket->abort();//取消已有链接
     tcpSocket->connectToHost(hostip, hosthost);//链接服务器
+    qDebug()<<"close!";
     if(!tcpSocket->waitForConnected(30000))
     {
         this->close();
@@ -145,6 +151,5 @@ void sendFile::closeEvent(QCloseEvent *event)
     }
     tcpSocket->disconnectFromHost();
     tcpSocket->close();
-    tcpServer->disconnect();
-    tcpServer->close();
 }
+

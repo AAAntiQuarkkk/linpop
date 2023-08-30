@@ -21,9 +21,14 @@ SOURCES += \
     login.cpp \
     main.cpp \
     mainwindow.cpp \
+    processbarreceive.cpp \
+    processbarsend.cpp \
     receivefile.cpp \
+    receivefilethread.cpp \
     registerui.cpp \
     sendfile.cpp \
+    sendfilethread.cpp \
+    tcpserverhelper.cpp \
     userinfo.cpp
 
 HEADERS += \
@@ -31,9 +36,14 @@ HEADERS += \
     guiuserlist.h \
     login.h \
     mainwindow.h \
+    processbarreceive.h \
+    processbarsend.h \
     receivefile.h \
+    receivefilethread.h \
     registerui.h \
     sendfile.h \
+    sendfilethread.h \
+    tcpserverhelper.h \
     userinfo.h
 
 FORMS += \
@@ -41,6 +51,8 @@ FORMS += \
     guiuserlist.ui \
     login.ui \
     mainwindow.ui \
+    processbarreceive.ui \
+    processbarsend.ui \
     receivefile.ui \
     registerui.ui \
     sendfile.ui

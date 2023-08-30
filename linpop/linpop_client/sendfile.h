@@ -1,45 +1,52 @@
 #ifndef SENDFILE_H
 #define SENDFILE_H
 
-#include <QWidget>
-#include <QTcpServer>
-#include <QTcpSocket>
-#include <QFile>
-#include <QTimer>
+#include "sendfilethread.h"
+#include "processbarsend.h"
+
+#include <QMainWindow>
+#include <QMap>
 #include <QCloseEvent>
 
-namespace Ui {
-class sendFile;
-}
+QT_BEGIN_NAMESPACE
+namespace Ui { class SendFile; }
+QT_END_NAMESPACE
 
-class sendFile : public QWidget
+class SendFile : public QMainWindow
 {
     Q_OBJECT
 
 public:
-    explicit sendFile(QWidget *parent = nullptr);
-    ~sendFile();
+    SendFile(QString clientID, QWidget *parent = nullptr);
+    ~SendFile();
 
-    //发送数据
-    void sendData();
+signals:
+    void startThread(ushort port,QString ip,QString fileID);
+
+private slots:
+    void doRefFileInfo(QString ,qint64);
+    void doSigOver(QString,bool);
+    void doSigConnect(bool);
 
 private slots:
     void on_pushButton_clicked();
-
-    void on_pushButton_2_clicked();
 
 protected:
     void closeEvent(QCloseEvent *event);
 
 private:
-    Ui::sendFile *ui;
-    QTcpServer *tcpServer;
-    QTcpSocket *tcpSocket;
-    QFile file;
-    QTimer timer;
-    QString fileName;
-    quint64 fileSize;
-    quint64 sendSize;
-};
+    ProcessBarSend* getProcessBarSend(QString);
+    QThread* getSendFileThread(QString);
 
-#endif // SENDFILE_H
+private:
+    Ui::SendFile *ui;
+
+    QTcpSocket* tcpSocket;
+
+    QThread *fileThread;
+    SendFileThread *sendThread;
+
+    QMap<QString,ProcessBarSend*> m_mapSend;
+    QMap<QString,QThread*> m_mapClient;
+};
+#endif // MAINWINDOW_H

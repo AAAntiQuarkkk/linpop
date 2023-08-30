@@ -1,9 +1,11 @@
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
 
+#include "sendfile.h"
+#include "receivefile.h"
+
 #include <login.h>
-#include <sendfile.h>
-#include <receivefile.h>
+
 #include <QHBoxLayout>
 
 extern userinfo user;
@@ -461,8 +463,8 @@ void MainWindow::on_pushButton_sendFile_clicked()
                 tcpSocket->write(message.toUtf8());
                 tcpSocket->flush();
             }
-                sendFile *sf = new sendFile();
-                sf->show();
+            SendFile* sf = new SendFile(otheruser.ip,this);
+            sf->show();
         }
         else
         {
@@ -486,7 +488,7 @@ void MainWindow::on_pushButton_clicked()
             QString friendname = friendlist.at(ui->listWidget_friendList->currentRow());
             otheruser.name = friendname;
             otheruser.ip = friendiplist.at(ui->listWidget_friendList->currentRow());
-            receivefile *rf = new receivefile();
+            ReceiveFile *rf = new ReceiveFile(this);
             rf->show();
         }
         else
